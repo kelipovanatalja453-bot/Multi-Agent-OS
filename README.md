@@ -66,7 +66,7 @@ human verifies against the original goal.
 
 1. Copy the skill into your agent's skill directory:
    ```bash
-   git clone https://github.com/{{GITHUB_USERNAME}}/vibe-agent.git
+   git clone https://github.com/kelipovanatalja453-bot/vibe-agent.git
    cp -r vibe-agent/plugin/vibe-agent/skills/core-coordination ~/.codex/skills/
    cp -r vibe-agent/plugin/vibe-agent/skills/core-coordination ~/.claude/skills/
    ```
@@ -90,4 +90,4 @@ significantly. Open an issue before large contributions.
 
 ## License
 
-MIT © 2026 {{YOUR_NAME}}
+MIT © 2026 Zhou Hongyuan
