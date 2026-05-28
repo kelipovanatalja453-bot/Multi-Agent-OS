@@ -1,0 +1,49 @@
+# vibe-agent resource preset (EXAMPLE — author's real setup)
+# Copy this to my-setup.yaml and fill in YOUR own models/quotas.
+# Delete tiers/models you don't have. The plugin maps tasks to whatever you list.
+
+tiers:
+  S:   # architecture / complex reasoning / audit
+    - name: claude
+      framework: claude-code-native
+      quota: subscription          # subscription | api | free
+    - name: gpt-5
+      framework: codex
+      quota: subscription
+    - name: gemini
+      framework: gemini-cli
+      quota: subscription
+      note: audit / long-context scanning specialty
+  A:   # engineering execution / local verification
+    - name: mimo
+      framework: claude-code-shell
+      quota: api
+      cost: very-low
+    - name: deepseek
+      framework: claude-code-shell
+      quota: api
+      cost: low
+  B:   # batch / low-risk
+    - name: deepseek
+      framework: api-direct
+      cost: very-low
+    - name: glm
+      framework: api-direct
+      cost: low
+      role: fallback-only
+
+policies:
+  default_entry: A                 # most tasks start here; escalate when needed
+  escalate_to_S_when:
+    - R3-or-above
+    - cross-module-refactor
+    - schema-change
+  fallback_when_S_exhausted: "A + B"
+
+# Pain points you most want this setup to address (drives which skills to load).
+# Options: completion-ambiguity / task-isolation / context-gap /
+#          ownership-conflict / handoff-loss / blame-attribution
+pain_points:
+  - completion-ambiguity           # B: "done" without proven effect
+  - task-isolation                 # E: don't know the next step
+  - context-gap                    # A: receiver lacks context
