@@ -27,16 +27,23 @@ Agent 输出转发请求, 用户手动 copy-paste 转发。
 - B: DeepSeek API / GLM API
 - 模型+框架组合决定档位, 不只看模型名
 
-## D6: Gemini 个例处理
-Gemini CLI 的 skill 机制可能和 Codex/Claude 不同 (待实测)。
-若不支持 skill, 用 GEMINI.md 或仅作被转发的审计员。不为统一而强行设计。
+## D6: Gemini skill 机制 (已验证)
+Gemini CLI 的 skill 系统实际上最完善 (有 install/link/enable/disable CLI 命令)。
+安装路径: `~/.gemini/skills/<name>/SKILL.md`。
+安装方式: `gemini skills install <local-path>` (自动复制) 或 `gemini skills link <local-path>` (符号链接, 开发用)。
+frontmatter 要求: `---` 必须在文件首行。
+原始假设"Gemini 可能不支持 skill"已被 2026-05-28 实测推翻。
 
 ## D7: pre-validation draft 状态
 当前所有内容标 pre-validation。1586 行版作反面教材保留并加 banner。
 实测发生在 2026 年 6-7 月的 Finer + 蛋白项目中。
 
-## D8: 装载路径需经验验证 (Codex 提出)
+## D8: 装载路径经验验证 (已完成)
 不信文档声称, 用测试标记实测每个 CLI 真实加载哪个文件/skill。写入前强制步骤。
+实测结果 (2026-05-28): 见 `docs/loading-paths.md`。三端全部确认。
+- Claude Code: `~/.claude/skills/<name>/SKILL.md` 已确认
+- Codex: `~/.codex/skills/<name>/SKILL.md` 已确认（路径模式与 Claude Code 一致）
+- Gemini CLI: `gemini skills install` + `~/.gemini/skills/<name>/SKILL.md` 已确认 (D6 假设被推翻)
 
 ## D9: plugin 结构预留, 内容极简
 用 plugin 形态 (支持多 skill), 但 v0.1 只实装 1 个 core-coordination skill。

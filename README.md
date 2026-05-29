@@ -64,15 +64,41 @@ human verifies against the original goal.
 
 ## How to use
 
-1. Copy the skill into your agent's skill directory:
-   ```bash
-   git clone https://github.com/kelipovanatalja453-bot/vibe-agent.git
-   cp -r vibe-agent/plugin/vibe-agent/skills/core-coordination ~/.codex/skills/
-   cp -r vibe-agent/plugin/vibe-agent/skills/core-coordination ~/.claude/skills/
-   ```
-   (Gemini's skill mechanism differs — see notes in SKILL.md.)
-2. Copy `my-setup.example.yaml` to `my-setup.yaml` and fill in your own models.
-3. Start any agent and ask "who are you?" — it should declare its tier.
+### One command install (recommended)
+
+```bash
+npx skills add https://github.com/kelipovanatalja453-bot/vibe-agent
+```
+
+### Install a single skill
+
+```bash
+npx skills add https://github.com/kelipovanatalja453-bot/vibe-agent --skill "core-coordination"
+```
+
+### Manual install (fallback)
+
+```bash
+git clone https://github.com/kelipovanatalja453-bot/vibe-agent.git
+cd vibe-agent && bash install.sh
+```
+
+Install a single agent manually:
+
+```bash
+# Claude Code
+cp -r plugin/vibe-agent/skills/core-coordination ~/.claude/skills/
+
+# Codex
+cp -r plugin/vibe-agent/skills/core-coordination ~/.codex/skills/
+
+# Gemini CLI
+gemini skills install plugin/vibe-agent/skills/core-coordination
+```
+
+After installation, copy `my-setup.example.yaml` to `my-setup.yaml` and fill
+in your own models. Then start any agent and ask "who are you?" — it should
+declare its tier.
 
 ## Roadmap
 
