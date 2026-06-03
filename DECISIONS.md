@@ -51,3 +51,24 @@ frontmatter 要求: `---` 必须在文件首行。
 presets/ 先只有作者自己的配置作范例。
 可视化 v0.1 只做 README 内 Mermaid 图, 不做独立 landing page。
 警告: "为适配所有人而设计通用系统" 是 1586 行死法的变体, 严禁。
+
+## D10: 信息三层分类
+- Truth source: `AGENTS.md` / `DECISIONS.md` / 已发布的 `SKILL.md` / 验证报告
+- Context artifact: `docs/operating-model-draft.md` / 参考项目 / 历史讨论
+- Generated working note: 任务卡 / handoff / 中间审查
+- 规则: Agent 可读 context artifact, 但判断必须回到 truth source
+- 不创建独立文件维护这套分类, 写在 `DECISIONS.md` 里即可
+
+## D11: v0.1 是否有效的验证指标
+跑 3-5 次真实 multi-agent 交接后, 看以下 4 项是否成立:
+- 新 agent 2 分钟内能找到该读的文件
+- handoff 后接收方不需要用户重复解释背景
+- agent 不误读 `docs/operating-model-draft.md` 为当前规范
+- 回报都能链接到证据文件或验证命令
+4 项有 1 项不成立 → 修订对应规则, 不是上 RAG / 加 context-map / 加更多文件
+
+## D12: 任务卡可选字段 "上下文入口"
+当 handoff 给的 agent 不熟悉项目时, 任务卡可以增加 1 行:
+> ## 上下文入口: [文件路径列表]
+
+不是强制字段, 不改 `SKILL.md`, 等真实使用中证明常需要再升为强制。

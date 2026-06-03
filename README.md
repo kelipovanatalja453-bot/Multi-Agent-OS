@@ -64,24 +64,28 @@ human verifies against the original goal.
 
 ## How to use
 
-### One command install (recommended)
+### Local validation install
+
+For current pre-validation work, install from a local checkout so you verify the
+exact working tree:
+
+```bash
+git clone https://github.com/kelipovanatalja453-bot/vibe-agent.git
+cd vibe-agent
+bash install.sh --dry-run
+bash install.sh
+```
+
+### GitHub install after release
+
+After the current cleanup is pushed to GitHub, install through the skills CLI:
 
 ```bash
 npx skills add https://github.com/kelipovanatalja453-bot/vibe-agent
-```
-
-### Install a single skill
-
-```bash
 npx skills add https://github.com/kelipovanatalja453-bot/vibe-agent --skill "core-coordination"
 ```
 
 ### Manual install (fallback)
-
-```bash
-git clone https://github.com/kelipovanatalja453-bot/vibe-agent.git
-cd vibe-agent && bash install.sh
-```
 
 Install a single agent manually:
 

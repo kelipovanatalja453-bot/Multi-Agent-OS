@@ -12,3 +12,5 @@ __pycache__/
 plugin/vibe-agent/presets/my-setup.yaml
 # bootstrap instruction file (not part of the deliverable)
 vibe-agent-bootstrap.md
+# local reference files outside the v0.1 deliverable
+*.pdf

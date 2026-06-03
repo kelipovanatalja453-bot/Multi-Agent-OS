@@ -84,5 +84,5 @@ description: Multi-LLM-agent coordination rules. Load when working in a project
 红线触发 = 输出"红线警告"(同转发请求格式, "建议转给"必填"用户"), 等用户确认。
 
 ## Note: Gemini
-Install via `gemini skills install <path-to-SKILL.md>` (or `gemini skills link` for dev).
+Install via `gemini skills install <path-to-skill-dir>` (or `gemini skills link` for dev).
 Gemini's skill system supports install/link/enable/disable — see `gemini skills --help`.
