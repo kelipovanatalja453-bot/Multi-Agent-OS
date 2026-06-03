@@ -1,73 +1,80 @@
 # vibe-agent
 
-> A minimal methodology framework for multi-LLM-agent coding workflows.
-> 一个面向多 LLM Agent 协作的极简方法论框架。
+> Minimal coordination rules for running multiple AI coding agents without
+> losing ownership, context, or proof of completion.
+>
+> 面向多 AI 编码 Agent 协作的极简规则集：让 Codex、Claude Code、Gemini、
+> MiMo、DeepSeek 在同一个项目里知道自己该不该做、何时停、如何交接、怎样证明完成。
 
 ![status](https://img.shields.io/badge/status-pre--validation-orange)
 ![version](https://img.shields.io/badge/version-0.1.0--draft-blue)
+![scope](https://img.shields.io/badge/scope-one%20core%20skill-lightgrey)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
-## Why this exists
+## What It Solves
 
-When you use multiple AI coding agents at once — Codex, Claude Code, MiMo,
-DeepSeek, Gemini — coordination breaks down in predictable ways:
-agents claim "done" without proving the goal was met, tasks get lost between
-handoffs, low-capability agents wander into architecture decisions, and context
-drops every time work passes from one agent to another.
+When several agents work on the same project, coordination usually fails in
+predictable ways:
 
-vibe-agent is a small set of shared rules that every agent loads, so they all
-speak the same language: capability tiers, stop conditions, a uniform task card,
-handoff requests, and evidence-bound completion.
+| Failure mode | What happens |
+|---|---|
+| Vague completion | An agent says "done" without evidence that the goal was met. |
+| Lost handoff | The next agent lacks the task boundary, files, or current state. |
+| Capability drift | A weaker agent wanders into architecture or cross-module decisions. |
+| Context break | Each transfer forces the user to explain the project again. |
 
-当你同时使用多个 AI 编码 Agent 时，协作会以可预测的方式崩坏：Agent 声称"完成"
-却没证明目标达成、任务在交接间丢失、低能力模型越界改架构、上下文每次转手都断层。
-vibe-agent 是一套所有 Agent 共享的极简规则，让它们说同一种语言。
+vibe-agent gives every agent the same small operating contract:
 
-## How it works
+1. Declare identity and capability tier.
+2. Decide whether the task fits that tier.
+3. Stop and emit a handoff request when it does not.
+4. Report completion with evidence, not vibes.
+
+## How It Works
 
 ```mermaid
-graph TD
-    User[用户: 下达任务] --> Tier{能力档位判断}
-    Tier -->|S 级: 架构/复杂推理| S[Claude Code / GPT-5 Codex / Gemini]
-    Tier -->|A 级: 工程执行| A[Codex / MiMo / DeepSeek on Claude Code]
-    Tier -->|B 级: 批量低风险| B[DeepSeek API / GLM API]
-    S --> Handoff[转发请求]
-    A --> Report[回报 + 证据]
-    B --> Report
-    Handoff -.人工转发.-> User
-    Report --> Verify[Evidence 验收]
-    Verify --> User
+flowchart TD
+    Start["User gives task"] --> Declare["Agent declares model + tier"]
+    Declare --> Fit{"Task fits tier and boundaries?"}
+    Fit -->|Yes| Work["Execute scoped work"]
+    Fit -->|No| Handoff["Emit handoff request and stop"]
+    Work --> Evidence["Return report with evidence"]
+    Handoff --> User["User forwards task card"]
+    Evidence --> Verify["User or reviewer verifies"]
 ```
 
-Core loop: declare identity → judge if task fits your tier → if not, emit a
-handoff request and stop → if yes, execute → report back with evidence →
-human verifies against the original goal.
+The core rule is deliberately manual: handoffs are copy-pasted by a human.
+That keeps the system small, inspectable, and hard to over-automate before real
+validation proves automation is worth adding.
 
-## What's included (v0.1)
+## What Ships In v0.1
 
-- `plugin/vibe-agent/skills/core-coordination/SKILL.md` — the one skill that
-  matters: identity declaration, capability tiers, stop conditions, handoff
-  request format, task card format, report format, red lines.
-- `plugin/vibe-agent/presets/my-setup.example.yaml` — example resource config.
-  Copy it, fill in your own models and quotas.
-- `docs/operating-model-draft.md` — a 1586-line early design document, kept as
-  a reference. **Pre-validation; expect heavy revision.**
+| Path | Purpose |
+|---|---|
+| `plugin/vibe-agent/skills/core-coordination/SKILL.md` | The actual rule set: tiers, stop conditions, task cards, handoff format, report format, red lines. |
+| `skills/core-coordination/SKILL.md` | Root-level copy for `npx skills add` compatibility. |
+| `plugin/vibe-agent/presets/my-setup.example.yaml` | Example model and quota configuration. |
+| `docs/loading-paths.md` | Verified loading paths for Claude Code, Codex, and Gemini CLI. |
+| `docs/operating-model-draft.md` | Historical 1586-line draft, kept as reference and explicitly not the current spec. |
 
-## What's NOT here yet (honest status)
+## Current Status
 
-- Additional skills (handoff, review-verify, quota-routing, multi-agent-parallel)
-  are planned but **not built**. They will be added only when real use proves
-  they're needed.
-- No automation. Handoffs are copy-pasted by a human on purpose.
-- No real-world validation case study yet (planned: Jun–Jul 2026).
-- No standalone landing page.
+This is a **pre-validation v0.1 draft**.
 
-## How to use
+- Built: one core coordination skill.
+- Verified: basic loading paths for Claude Code, Codex, and Gemini CLI.
+- Not built: automation, routing engine, review engine, standalone landing page.
+- Not validated yet: repeated real-world multi-agent handoffs in production work.
+
+The project stays small on purpose. New skills are added only after real use
+shows the current rule set is insufficient.
+
+## Install
 
 ### Local validation install
 
-For current pre-validation work, install from a local checkout so you verify the
-exact working tree:
+Use this while the project is still pre-validation, so you test the exact
+working tree:
 
 ```bash
 git clone https://github.com/kelipovanatalja453-bot/vibe-agent.git
@@ -78,16 +85,14 @@ bash install.sh
 
 ### GitHub install after release
 
-After the current cleanup is pushed to GitHub, install through the skills CLI:
+After the current cleanup is pushed to GitHub:
 
 ```bash
 npx skills add https://github.com/kelipovanatalja453-bot/vibe-agent
 npx skills add https://github.com/kelipovanatalja453-bot/vibe-agent --skill "core-coordination"
 ```
 
-### Manual install (fallback)
-
-Install a single agent manually:
+### Manual install
 
 ```bash
 # Claude Code
@@ -100,23 +105,63 @@ cp -r plugin/vibe-agent/skills/core-coordination ~/.codex/skills/
 gemini skills install plugin/vibe-agent/skills/core-coordination
 ```
 
-After installation, copy `my-setup.example.yaml` to `my-setup.yaml` and fill
-in your own models. Then start any agent and ask "who are you?" — it should
-declare its tier.
+Then start an agent and ask:
+
+```text
+who are you?
+```
+
+It should declare its framework, model, tier, and whether it will take the task.
+
+## The Core Formats
+
+### Task card
+
+```text
+# 任务: [一句话, ≤20 字]
+## 在哪: 属于 [大目标] / 下一步预告 [...]
+## 给谁: [目标 Agent]
+## 接收方需要知道: 文件 [...] / 当前状态 [1-2 行]
+## 应该做的: 1. ... 2. ...
+## 完成 =: 证据 checklist (可粘贴/截图/链接) + 验证命令
+## 失败时: 阻塞条件
+```
+
+### Completion report
+
+```text
+# 回报: [一句话]
+## 状态: [完成 / 部分完成 / 阻塞]
+## 证据: - [✅] 证据1: [...] - [❌] 证据2: [未完成, 原因]
+## 改了什么: 文件 [...] / 命令 [...]
+## 需要决策吗?: [不需要 / 需要 + 具体问题]
+```
+
+## Validation Criteria
+
+v0.1 is considered useful only if 3-5 real multi-agent handoffs show that:
+
+- A new agent finds the right entry files within 2 minutes.
+- The receiver does not need the user to repeat the background.
+- Agents do not mistake `docs/operating-model-draft.md` for the current spec.
+- Every completion report links to files, commands, screenshots, or other proof.
+
+If one of these fails, revise the matching rule. Do not add a large routing
+system until the failure proves that a small rule cannot solve it.
 
 ## Roadmap
 
-- **v0.1 (now)**: one core skill, one example preset, README visualization.
-- **v0.2**: add skills proven necessary by real use; add more presets.
-- **v0.5**: refined after validation on real multi-agent projects.
-
-The guiding principle: rules emerge from real use, not upfront design. This
-project deliberately stays small until usage proves what to add.
+| Version | Plan |
+|---|---|
+| v0.1 | One core skill, manual handoff, evidence-bound reports. |
+| v0.2 | Add only the skills proven necessary by validation. |
+| v0.5 | Refine after repeated use on real multi-agent projects. |
 
 ## Contributing
 
-Issues and PRs welcome, but note this is **pre-validation** and may change
-significantly. Open an issue before large contributions.
+Issues and PRs are welcome, but this repository is still pre-validation. Open
+an issue before large contributions, especially anything that expands the core
+rule set or adds automation.
 
 ## License
 
